@@ -39,10 +39,15 @@ io.on('connection', (socket) => {
     });
   });
   
-
-  console.log('a user connected');
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    if (addedUser) {
+      --numUsers;
+
+      socket.emit('user disconnected', {
+        username: socket.username,
+      })
+    console.log('user disconnected', socket.username);
+    }
   });
 });
 
