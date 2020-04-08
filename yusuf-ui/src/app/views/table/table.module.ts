@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
-import { WaitingRoomComponent } from './waiting-room.component';
+import { TableComponent } from './table.component';
 import { SharedModule } from 'app/shared/shared.module';
 
 
 
 @NgModule({
-  declarations: [
-    WaitingRoomComponent
-  ],
+  declarations: [TableComponent],
   imports: [
     SharedModule
   ]
 })
-export class WaitingRoomModule { }
+export class TableModule { }

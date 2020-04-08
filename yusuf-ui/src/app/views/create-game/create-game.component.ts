@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SocketioService } from 'app/shared/socketio/socketio.service';
 import { Router } from '@angular/router';
+import { PlayerService } from 'app/shared/player/player.service';
 
 @Component({
   selector: 'app-create-game',
@@ -13,7 +13,7 @@ export class CreateGameComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private socketService: SocketioService,
+    private playerService: PlayerService,
     private router: Router
   ) { }
 
@@ -28,8 +28,8 @@ export class CreateGameComponent implements OnInit {
   }
 
   public createTable() {
-    this.socketService.login(this.formGroup.controls.username.value);
-    this.router.navigate(['/waiting-room']);
+    this.playerService.login(this.formGroup.controls.username.value);
+    this.router.navigate(['/yusuf']);
   }
 
 }
