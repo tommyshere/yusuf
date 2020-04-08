@@ -22,15 +22,15 @@ export class PlayerService {
   }
 
   public setPlayerFromServer(): void {
-    this.socket.on('get user', (player) => {
+    this.socket.on('get current player', (player) => {
       this._currentPlayer.next(player)
     });
   }
 
   getAllPlayers(): Observable<Player[]> {
-    this.socket.emit('get users');
+    this.socket.emit('get players');
     return new Observable<Player[]>(players => {
-      this.socket.on('get users', (data) => {
+      this.socket.on('get players', (data) => {
         players.next(data);
       });
       return () => {

@@ -22,12 +22,12 @@ io.on('connection', (socket) => {
   });
 
   // get the current user
-  socket.on('get user', () => {
+  socket.on('get current player', () => {
     emitgetUser(addedUser);
   })
 
   // get all the users
-  socket.on('get users', () => {
+  socket.on('get players', () => {
     emitAllUsers();
   })
 
@@ -53,16 +53,18 @@ io.on('connection', (socket) => {
   });
 
 
-  // Reusable function
+  // ------------------- Reusable functions ----------------------------------
+
+  // get the current User
   emitGetUser = function(bool) {
-    socket.emit('get user', {
+    socket.emit('get current player', {
       username: bool ? socket.username : '',
       playerId: bool ? _players.indexOf(socket.username) : -1
     })
   }
 
   emitAllUsers = function() {
-    io.emit('get users', {
+    io.emit('get players', {
       players: _players
     })
   }
