@@ -19,7 +19,6 @@ export class CreateGameComponent implements OnInit {
 
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
-      tableName: '',
       maxNum: 150,
       username: '',
       flush: false,
