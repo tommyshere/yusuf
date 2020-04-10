@@ -10,7 +10,6 @@ import { Player } from 'app/class';
 export class PlayerService {
   private socket;
   private _currentPlayer = new BehaviorSubject<Player>(new Player());
-  // private _players = new BehaviorSubject<Player[]>([]);
 
   constructor() {
     this.socket = io(environment.SOCKET_ENDPOINT);
@@ -22,16 +21,16 @@ export class PlayerService {
   }
 
   public setPlayerFromServer(): void {
-    this.socket.on('get current player', (player) => {
-      this._currentPlayer.next(player)
+    this.socket.on('get current player', (data) => {
+      this._currentPlayer.next(data.currentPlayer)
     });
   }
 
-  getAllPlayers(): Observable<Player[]> {
+  getAllPlayers(): Observable<string[]> {
     this.socket.emit('get players');
-    return new Observable<Player[]>(players => {
+    return new Observable<string[]>(players => {
       this.socket.on('get players', (data) => {
-        players.next(data);
+        players.next(data.players);
       });
       return () => {
         this.socket.disconnect();

@@ -5,6 +5,7 @@ const io = require('socket.io')(http);app.get('/', (req, res) => {
 });
 const _ = require('lodash/core');
 
+// An a list of Player Objects
 var _players = [];
 
 io.on('connection', (socket) => {
@@ -14,9 +15,13 @@ io.on('connection', (socket) => {
   socket.on('login', (username) => {
     if (addedUser) return;
 
-    // store the username in the socket session for this client
-    socket.username = username;
-    _players.push(username);
+    // store the player object in the socket session for this client
+    const player = {
+      id: _players.length + 1,
+      username: username
+    };
+    _players.push(player);
+    socket.currentPlayer = player;
     addedUser = true;
     emitGetUser(addedUser);
   });
@@ -32,10 +37,8 @@ io.on('connection', (socket) => {
   })
 
   // whenever a player plays does an action
-  socket.on('action', (data) => {
+  io.on('action', (data) => {
     socket.broadcast.emit('action', {
-      playerId: socket.id,
-      username: socket.username,
       action: data
     });
   });
@@ -58,8 +61,7 @@ io.on('connection', (socket) => {
   // get the current User
   emitGetUser = function(bool) {
     socket.emit('get current player', {
-      username: bool ? socket.username : '',
-      playerId: bool ? _players.indexOf(socket.username) : -1
+      currentPlayer: bool ? socket.currentPlayer : undefined
     })
   }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PlayerService } from 'app/shared/player/player.service';
-import { map, switchMap } from 'rxjs/operators';
 import { Player } from 'app/class';
 import { Subscription } from 'rxjs';
 
@@ -13,8 +12,9 @@ export class TableComponent implements OnInit, OnDestroy {
   private _rxCurrentPlayer: Subscription;
   private _rxPlayers: Subscription;
   public currentPlayer: Player;
-  public players: Player[];
-  public showUsers = false;
+  public players: string[];
+  public showTable = false;
+  public startGame = false;
 
   constructor(
     private playerService: PlayerService
@@ -22,21 +22,25 @@ export class TableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._rxCurrentPlayer = this.playerService.getCurrentPlayer().subscribe(player => {
-      if (player.playerId >= 0) {
+      if (player) {
         this.currentPlayer = player;
-        this.showUsers = true;
+        this.showTable = true;
         // show player list component
       } else {
-        this.showUsers = false;
+        this.showTable = false;
         // want user to login
         // show Login
       }
     });
 
     this._rxPlayers = this.playerService.getAllPlayers().subscribe(players => {
-      console.log(players);
       this.players = players;
     })
+  }
+
+  start() {
+    this.startGame = true;
+    // set the deck;
   }
 
   ngOnDestroy() {
