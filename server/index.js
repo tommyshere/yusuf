@@ -3,52 +3,74 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);app.get('/', (req, res) => {
   res.send('<h1>Hey Socket.io</h1>');
 });
+const _ = require('lodash/core');
 
-var numUsers = 0;
+// An a list of Player Objects
+var _players = [];
 
 io.on('connection', (socket) => {
   var addedUser = false;
 
   // listen to user coming into a server
-  socket.on('add user', (username) => {
+  socket.on('login', (username) => {
     if (addedUser) return;
 
-    // store the username in the socket session for this client
-    socket.username = username;
-    ++numUsers;
+    // store the player object in the socket session for this client
+    const player = {
+      id: _players.length + 1,
+      username: username
+    };
+    _players.push(player);
+    socket.currentPlayer = player;
     addedUser = true;
-    socket.emit('login', {
-      numUsers: numUsers
-    });
-
-    // echo globally (all clients) that a person has connected
-    socket.emit('user joined', {
-      username: socket.username,
-      playerId: numUsers
-    });
-
-    console.log(socket.username);
+    emitGetUser(addedUser);
   });
 
+  // get the current user
+  socket.on('get current player', () => {
+    emitgetUser(addedUser);
+  })
+
+  // get all the users
+  socket.on('get players', () => {
+    emitAllUsers();
+  })
+
   // whenever a player plays does an action
-  socket.on('action', (data) => {
+  io.on('action', (data) => {
     socket.broadcast.emit('action', {
-      playerId: socket.id,
-      username: socket.username,
       action: data
     });
   });
   
   socket.on('disconnect', () => {
     if (addedUser) {
-      --numUsers;
+      // _.remove(_players, (player) => { player === socket.username });
 
       socket.emit('user disconnected', {
         username: socket.username,
+        players: _players
       })
     console.log('user disconnected', socket.username);
     }
   });
+
+
+  // ------------------- Reusable functions ----------------------------------
+
+  // get the current User
+  emitGetUser = function(bool) {
+    socket.emit('get current player', {
+      currentPlayer: bool ? socket.currentPlayer : undefined
+    })
+  }
+
+  emitAllUsers = function() {
+    io.emit('get players', {
+      players: _players
+    })
+  }
+  
 });
 
 http.listen(3000, () => {

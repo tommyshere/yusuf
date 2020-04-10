@@ -7,7 +7,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { CreateGameModule } from './views/create-game/create-game.module';
 import { AppRoutingModule } from './app-routing.module';
-import { WaitingRoomModule } from './views/waiting-room/waiting-room.module';
+import { TableModule } from './views/table/table.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { WaitingRoomModule } from './views/waiting-room/waiting-room.module';
     CoreModule,
     SharedModule,
     CreateGameModule,
-    WaitingRoomModule
+    TableModule
   ],
   providers: [],
   bootstrap: [AppComponent],
