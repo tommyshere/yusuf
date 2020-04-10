@@ -59,13 +59,14 @@ io.on('connection', (socket) => {
 
   // ------------------- Reusable functions ----------------------------------
 
-  // get the current User
+  // emit the current User
   emitGetUser = function(bool) {
     socket.emit('get current player', {
       currentPlayer: bool ? socket.currentPlayer : undefined
     })
   }
 
+  // emit all players
   emitAllUsers = function() {
     io.emit('get players', {
       players: _players
