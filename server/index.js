@@ -10,7 +10,6 @@ var _deck = {};
 
 io.on('connection', (socket) => {
   var addedUser = false;
-  var startGame = false;
 
   // listen to user coming into a server
   socket.on('login', (username) => {
@@ -19,7 +18,8 @@ io.on('connection', (socket) => {
     // store the player object in the socket session for this client
     const player = {
       id: _players.length + 1,
-      username: username
+      username: username,
+      points: 0
     };
     _players.push(player);
     socket.currentPlayer = player;
