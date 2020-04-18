@@ -24,6 +24,7 @@ io.on('connection', (socket) => {
     socket.currentPlayer = player;
     addedUser = true;
     emitGetUser(addedUser);
+    emitAllUsers();
   });
 
   // get the current user
@@ -48,10 +49,10 @@ io.on('connection', (socket) => {
       // _.remove(_players, (player) => { player === socket.username });
 
       socket.emit('user disconnected', {
-        username: socket.username,
+        username: socket.currentPlayer.username,
         players: _players
       })
-    console.log('user disconnected', socket.username);
+    console.log('user disconnected', socket.currentPlayer.username);
     }
   });
 

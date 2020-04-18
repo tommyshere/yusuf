@@ -6,19 +6,26 @@
         </app-player>
       </div>
     </div>
+    
     <div class="row middle-row">
       <div class="player-col col-xl-4">
 
       </div>
 
       <div class="table-col col-xl-4">
-        <app-deck></app-deck>
+        <app-deck *ngIf="showTable"></app-deck>
+        <app-login *ngIf="!showTable"></app-login>
       </div>
 
       <div class="player-col col-xl-4">
 
       </div>
 
+    </div>
+    <div class="row lower-row">
+      <div class="player-col col-xl-6">
+
+      </div>
     </div>
   </div>
 </div>

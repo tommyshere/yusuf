@@ -3,6 +3,7 @@ import { TableComponent } from './table.component';
 import { SharedModule } from 'app/shared/shared.module';
 import { PlayerComponent } from './player/player.component';
 import { DeckComponent } from './deck/deck.component';
+import { LoginComponent } from './login/login.component';
 
 
 
@@ -10,7 +11,8 @@ import { DeckComponent } from './deck/deck.component';
   declarations: [
     TableComponent,
     PlayerComponent,
-    DeckComponent
+    DeckComponent,
+    LoginComponent
   ],
   imports: [
     SharedModule

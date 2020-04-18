@@ -22,6 +22,7 @@ export class PlayerService {
 
   public setPlayerFromServer(): void {
     this.socket.on('get current player', (data) => {
+      console.log(data);
       this._currentPlayer.next(data.currentPlayer)
     });
   }
