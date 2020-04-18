@@ -9,20 +9,28 @@ import { Player } from 'app/class';
 })
 export class PlayerService {
   private socket;
+  private _isAdmin = new BehaviorSubject<boolean>(false);
   private _currentPlayer = new BehaviorSubject<Player>(new Player());
 
   constructor() {
     this.socket = io(environment.SOCKET_ENDPOINT);
   }
 
-  login(username: string) {
+  public login(username: string): void {
     this.socket.emit('login', username);
     this.setPlayerFromServer();
   }
 
+  public setAdmin(value: boolean): void  {
+    this._isAdmin.next(value);
+  }
+
+  public isAdmin(): Observable<boolean> {
+    return this._isAdmin;
+  }
+
   public setPlayerFromServer(): void {
-    this.socket.on('get current player', (data) => {
-      console.log(data);
+    this.socket.on('set current player', (data) => {
       this._currentPlayer.next(data.currentPlayer)
     });
   }
@@ -30,7 +38,7 @@ export class PlayerService {
   getAllPlayers(): Observable<string[]> {
     this.socket.emit('get players');
     return new Observable<string[]>(players => {
-      this.socket.on('get players', (data) => {
+      this.socket.on('set players', (data) => {
         players.next(data.players);
       });
       return () => {

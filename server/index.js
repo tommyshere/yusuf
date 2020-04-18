@@ -3,13 +3,14 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);app.get('/', (req, res) => {
   res.send('<h1>Hey Socket.io</h1>');
 });
-const _ = require('lodash/core');
-
 // An a list of Player Objects
 var _players = [];
 
+var _deck = {};
+
 io.on('connection', (socket) => {
   var addedUser = false;
+  var startGame = false;
 
   // listen to user coming into a server
   socket.on('login', (username) => {
@@ -37,9 +38,20 @@ io.on('connection', (socket) => {
     emitAllUsers();
   })
 
+  // get deck
+  socket.on('get deck', deck => {
+    _deck = deck;
+    emitDeck();
+  })
+
+  // admin starts game
+  socket.on('admin start game', () => {
+    io.emit('admin start game');
+  })
+
   // whenever a player plays does an action
-  io.on('action', (data) => {
-    socket.broadcast.emit('action', {
+  socket.on('action', (data) => {
+    io.emit('action', {
       action: data
     });
   });
@@ -61,15 +73,22 @@ io.on('connection', (socket) => {
 
   // emit the current User
   emitGetUser = function(bool) {
-    socket.emit('get current player', {
+    socket.emit('set current player', {
       currentPlayer: bool ? socket.currentPlayer : undefined
     })
   }
 
   // emit all players
   emitAllUsers = function() {
-    io.emit('get players', {
+    io.emit('set players', {
       players: _players
+    })
+  }
+
+  // emit deck
+  emitDeck = function() {
+    io.emit('set deck', {
+      deck: _deck
     })
   }
   
