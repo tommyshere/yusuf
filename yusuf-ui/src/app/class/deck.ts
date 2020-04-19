@@ -1,5 +1,5 @@
 export class Deck {
-  spade?: string[];
+  spades?: string[];
   hearts?: string[];
   clubs?: string[];
   diamonds?: string[];

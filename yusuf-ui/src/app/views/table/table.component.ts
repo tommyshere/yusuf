@@ -37,7 +37,6 @@ export class TableComponent implements OnInit, OnDestroy {
     });
 
     this._rxPlayers = this.playerService.getAllPlayers().subscribe(players => {
-      console.log(players);
       this.players = players;
       this.playerService.setOrder(players.length);
     });

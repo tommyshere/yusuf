@@ -52,6 +52,9 @@ export class PlayerService {
       this.socket.on('set players', (data) => {
         players.next(data.players);
       });
+      return () => {
+        this.socket.disconnect();
+      }
     });
   }
 }

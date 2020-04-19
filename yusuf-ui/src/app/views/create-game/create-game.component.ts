@@ -31,7 +31,7 @@ export class CreateGameComponent implements OnInit {
   public createTable() {
     this.playerService.login(this.formGroup.value.username);
     this.playerService.setAdmin(true);
-    this.deckService.createDeck(2);
+    this.deckService.createDeck(1);
     this.router.navigate(['/yusuf']);
   }
 

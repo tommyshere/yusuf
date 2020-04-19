@@ -20,7 +20,6 @@ export class DeckComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._rxDeck = this.deckService.getDeck().subscribe(deck => {
       this.deck = deck;
-      console.log(this.deck);
     })
   }
 

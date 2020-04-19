@@ -10,7 +10,7 @@ import { environment } from 'environments/environment';
 export class DeckService {
   private socket;
   private _values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-  private _suits = ['spade', 'clubs', 'diamonds', 'hearts'];
+  private _suits = ['spades', 'clubs', 'diamonds', 'hearts'];
   private _deck = new BehaviorSubject<Deck>(new Deck());
   private _discardPile = new BehaviorSubject<Deck>(new Deck());
 
@@ -36,7 +36,7 @@ export class DeckService {
     let cards = Array.apply(null, new Array(numDeck)).map(() => this._values);
     cards = [].concat.apply([], cards);
 
-    newDeck.spade = this._shuffleCards(cards);
+    newDeck.spades = this._shuffleCards(cards);
     newDeck.hearts = this._shuffleCards(cards);
     newDeck.clubs = this._shuffleCards(cards);
     newDeck.diamonds = this._shuffleCards(cards);
@@ -44,28 +44,36 @@ export class DeckService {
     this._emitDeck(newDeck);
   }
 
-  public createHand(): Deck {
-    let newDeck: Deck;
-    const hand = new Deck();
+  public createHand(): Observable<Deck> {
+    const hand: Deck = {
+      spades: [],
+      diamonds: [],
+      hearts: [],
+      clubs: []
+    };
     // get deck from server
     this.socket.emit('get deck');
-    this.socket.on('get deck', (data) => {
-      for (let i = 0; i < 5; i++) {
-        // get random suit from deck
-        const randomSuit = this._randomSuit();
-        const pulledCard = data.deck[randomSuit].splice(0, 1);
-        hand[randomSuit].push(pulledCard);
-        newDeck = data.deck;
+    return new Observable<Deck>(newHand => {
+      this.socket.on('get deck', (data) => {
+        for (let i = 0; i < 5; i++) {
+          // get random suit from deck
+          const randomSuit = this._randomSuit();
+          console.log(randomSuit);
+          console.log(data.deck[randomSuit]);
+          const pulledCard = data.deck[randomSuit].splice(0, 1)[0];
+          hand[randomSuit].push(pulledCard);
+          newHand.next(hand);
+          this._emitDeck(data.deck);
+        }
+      });
+      return () => {
+        this.socket.disconnect();
       }
     });
-    this.socket.disconnect();
-
-    this._emitDeck(newDeck);
-    return hand;
   }
 
   private _emitDeck(deck: Deck): void {
-    this.socket.emit('new deck', deck);
+    this.socket.emit('update deck', deck);
   }
 
   private _shuffleCards(array: string[]): string[] {

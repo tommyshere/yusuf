@@ -26,9 +26,13 @@ io.on('connection', (socket) => {
     emitAllUsers();
   })
 
+  // update the deck
+  socket.on('update deck', (deck) => {
+    _deck = deck
+  })
+
   // get deck
-  socket.on('get deck', deck => {
-    _deck = deck;
+  socket.on('get deck', () => {
     emitDeck();
   })
 
@@ -66,7 +70,7 @@ io.on('connection', (socket) => {
 
   // emit deck
   emitDeck = function() {
-    io.emit('set deck', {
+    io.emit('get deck', {
       deck: _deck
     })
   }

@@ -15,8 +15,9 @@ export class HandComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.hand = this.deckService.createHand();
-    console.log(this.hand);
+    this.deckService.createHand().subscribe(hand => {
+      this.hand = hand;
+      console.log(hand);
+    })
   }
-
 }
