@@ -12,26 +12,14 @@ io.on('connection', (socket) => {
   var addedUser = false;
 
   // listen to user coming into a server
-  socket.on('login', (username) => {
+  socket.on('login', (loggedPlayer) => {
     if (addedUser) return;
 
-    // store the player object in the socket session for this client
-    const player = {
-      id: _players.length + 1,
-      username: username,
-      points: 0
-    };
-    _players.push(player);
-    socket.currentPlayer = player;
+    _players.push(loggedPlayer);
+    socket.currentPlayer = loggedPlayer;
     addedUser = true;
-    emitGetUser(addedUser);
     emitAllUsers();
   });
-
-  // get the current user
-  socket.on('get current player', () => {
-    emitgetUser(addedUser);
-  })
 
   // get all the users
   socket.on('get players', () => {
@@ -58,8 +46,6 @@ io.on('connection', (socket) => {
   
   socket.on('disconnect', () => {
     if (addedUser) {
-      // _.remove(_players, (player) => { player === socket.username });
-
       socket.emit('user disconnected', {
         username: socket.currentPlayer.username,
         players: _players
@@ -70,13 +56,6 @@ io.on('connection', (socket) => {
 
 
   // ------------------- Reusable functions ----------------------------------
-
-  // emit the current User
-  emitGetUser = function(bool) {
-    socket.emit('set current player', {
-      currentPlayer: bool ? socket.currentPlayer : undefined
-    })
-  }
 
   // emit all players
   emitAllUsers = function() {

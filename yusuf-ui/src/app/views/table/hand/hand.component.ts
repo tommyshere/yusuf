@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { DeckService } from 'app/shared/deck/deck.service';
+import { Deck } from 'app/class';
 
 @Component({
   selector: 'app-hand',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./hand.component.scss']
 })
 export class HandComponent implements OnInit {
+  public hand: Deck;
 
-  constructor() { }
+  constructor(
+    private deckService: DeckService
+  ) { }
 
   ngOnInit(): void {
+    this.hand = this.deckService.createHand();
+    console.log(this.hand);
   }
 
 }

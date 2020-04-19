@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
+import * as io from 'socket.io-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Deck } from 'app/class';
+import { environment } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DeckService {
+  private socket;
   private _values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   private _suits = ['spade', 'clubs', 'diamonds', 'hearts'];
   private _deck = new BehaviorSubject<Deck>(new Deck());
   private _discardPile = new BehaviorSubject<Deck>(new Deck());
 
-  constructor(
-    private socket
-  ) { }
+  constructor() {
+    this.socket = io(environment.SOCKET_ENDPOINT);
+  }
 
   public getDeck(): Observable<Deck> {
     this.socket.emit('get deck');

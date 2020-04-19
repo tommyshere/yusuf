@@ -11,14 +11,23 @@ export class PlayerService {
   private socket;
   private _isAdmin = new BehaviorSubject<boolean>(false);
   private _currentPlayer = new BehaviorSubject<Player>(new Player());
+  private _order: number;
 
   constructor() {
     this.socket = io(environment.SOCKET_ENDPOINT);
   }
 
-  public login(username: string): void {
-    this.socket.emit('login', username);
-    this.setPlayerFromServer();
+  public login(name: string): void {
+    const player: Player = {
+      username: name,
+      points: 0,
+    }
+    this._currentPlayer.next(player);
+    this.socket.emit('login', player);
+  }
+
+  public getCurrentPlayer(): Observable<Player> {
+    return this._currentPlayer;
   }
 
   public setAdmin(value: boolean): void  {
@@ -29,10 +38,12 @@ export class PlayerService {
     return this._isAdmin;
   }
 
-  public setPlayerFromServer(): void {
-    this.socket.on('set current player', (data) => {
-      this._currentPlayer.next(data.currentPlayer)
-    });
+  public getOrder(): number {
+    return this._order;
+  }
+
+  public setOrder(num: number): void {
+    this._order = num;
   }
 
   getAllPlayers(): Observable<string[]> {
@@ -41,17 +52,6 @@ export class PlayerService {
       this.socket.on('set players', (data) => {
         players.next(data.players);
       });
-      return () => {
-        this.socket.disconnect();
-      };
     });
-  }
-
-  public getCurrentPlayer(): Observable<Player> {
-    return this._currentPlayer;
-  }
-
-  public setCurrentPlayer(player: Player): void {
-    this._currentPlayer.next(player);
   }
 }

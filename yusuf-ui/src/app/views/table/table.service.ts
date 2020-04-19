@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
+import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';
+import { environment } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TableService {
+  private socket;
 
-  constructor(
-    private socket
-  ) { }
+  constructor() {
+    this.socket = io(environment.SOCKET_ENDPOINT);
+  }
 
   public adminStartGame() {
     this.socket.emit('admin start game');

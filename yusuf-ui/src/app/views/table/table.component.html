@@ -21,5 +21,11 @@
 
       </div>
     </div>
+
+    <div class="row hand-row">
+      <div class="offset-xl-4 col-xl-4" *ngIf="showTable" [hidden]="!startGame">
+        <app-hand></app-hand>
+      </div>
+    </div>
   </div>
 </div>

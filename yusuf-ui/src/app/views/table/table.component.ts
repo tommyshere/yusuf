@@ -28,31 +28,27 @@ export class TableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._rxCurrentPlayer = this.playerService.getCurrentPlayer().subscribe(player => {
-      if (player.id >= 0) {
+      if (Object.keys(player).length > 0) {
         this.currentPlayer = player;
         this.showTable = true;
-        console.log(player);
-        console.log('has player id');
       } else {
-        console.log('login player');
         this.showTable = false;
-        // want user to login
-        // show Login
       }
-      console.log(this.showTable);
     });
 
     this._rxPlayers = this.playerService.getAllPlayers().subscribe(players => {
+      console.log(players);
       this.players = players;
-    })
+      this.playerService.setOrder(players.length);
+    });
 
     this._rxAdmin = this.playerService.isAdmin().subscribe(value => {
       this.isAdmin = value;
-    })
+    });
 
     this._rxStartGame = this.tableService.startGame().subscribe(value => {
       this.startGame = value;
-    })
+    });
   }
 
   start() {
