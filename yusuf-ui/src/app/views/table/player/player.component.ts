@@ -8,6 +8,9 @@ import { Player } from 'app/class';
 })
 export class PlayerComponent implements OnInit {
   @Input() public player: Player;
+  // need logic for the player's turn to light up
+  // need logic for whenever a user calls yusuf
+  // show the player's points
 
   constructor() { }
 

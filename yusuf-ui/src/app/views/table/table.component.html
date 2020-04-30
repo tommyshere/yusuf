@@ -8,23 +8,23 @@
     </div>
     
     <div class="row middle-row">
-      <div class="player-col col-xl-4">
 
-      </div>
-
-      <div class="table-col col-xl-4">
-        <app-deck *ngIf="showTable"></app-deck>
-        <app-login *ngIf="!showTable"></app-login>
-      </div>
-
-      <div class="player-col col-xl-4">
-
+      <div class="table-col offset-xl-4 col-xl-4">
+        <app-deck [hidden]="!showTable && !startGame"></app-deck>
+        <app-login *ngIf="!showTable && !startGame"></app-login>
+        <button mat-raised-button (click)="start()" *ngIf="!showTable && startGame && isAdmin">Start Game</button>
       </div>
 
     </div>
     <div class="row lower-row">
       <div class="player-col col-xl-6">
 
+      </div>
+    </div>
+
+    <div class="row hand-row">
+      <div class="offset-xl-4 col-xl-4">
+        <app-hand></app-hand>
       </div>
     </div>
   </div>

@@ -3,51 +3,60 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);app.get('/', (req, res) => {
   res.send('<h1>Hey Socket.io</h1>');
 });
-const _ = require('lodash/core');
-
 // An a list of Player Objects
 var _players = [];
+
+var _deck = {};
 
 io.on('connection', (socket) => {
   var addedUser = false;
 
   // listen to user coming into a server
-  socket.on('login', (username) => {
+  socket.on('login', (loggedPlayer) => {
     if (addedUser) return;
 
-    // store the player object in the socket session for this client
-    const player = {
-      id: _players.length + 1,
-      username: username
-    };
-    _players.push(player);
-    socket.currentPlayer = player;
+    _players.push(loggedPlayer);
+    socket.currentPlayer = loggedPlayer;
     addedUser = true;
-    emitGetUser(addedUser);
     emitAllUsers();
   });
-
-  // get the current user
-  socket.on('get current player', () => {
-    emitgetUser(addedUser);
-  })
 
   // get all the users
   socket.on('get players', () => {
     emitAllUsers();
   })
 
+  // update the deck
+  socket.on('update deck', (deck) => {
+    _deck = deck
+  })
+
+  // get deck
+  socket.on('get deck', () => {
+    emitDeck();
+  })
+
+  // make a player hand
+  socket.on('create hand', () => {
+    socket.emit('create hand', {
+      deck: _deck
+    })
+  })
+
+  // admin starts game
+  socket.on('admin start game', () => {
+    io.emit('admin start game');
+  })
+
   // whenever a player plays does an action
-  io.on('action', (data) => {
-    socket.broadcast.emit('action', {
+  socket.on('action', (data) => {
+    io.emit('action', {
       action: data
     });
   });
   
   socket.on('disconnect', () => {
     if (addedUser) {
-      // _.remove(_players, (player) => { player === socket.username });
-
       socket.emit('user disconnected', {
         username: socket.currentPlayer.username,
         players: _players
@@ -59,16 +68,17 @@ io.on('connection', (socket) => {
 
   // ------------------- Reusable functions ----------------------------------
 
-  // get the current User
-  emitGetUser = function(bool) {
-    socket.emit('get current player', {
-      currentPlayer: bool ? socket.currentPlayer : undefined
+  // emit all players
+  emitAllUsers = function() {
+    io.emit('set players', {
+      players: _players
     })
   }
 
-  emitAllUsers = function() {
-    io.emit('get players', {
-      players: _players
+  // emit deck
+  emitDeck = function() {
+    io.emit('get deck', {
+      deck: _deck
     })
   }
   

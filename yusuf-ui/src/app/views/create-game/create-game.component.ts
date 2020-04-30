@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PlayerService } from 'app/shared/player/player.service';
+import { DeckService } from 'app/shared/deck/deck.service';
 
 @Component({
   selector: 'app-create-game',
@@ -14,6 +15,7 @@ export class CreateGameComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private playerService: PlayerService,
+    private deckService: DeckService,
     private router: Router
   ) { }
 
@@ -27,7 +29,9 @@ export class CreateGameComponent implements OnInit {
   }
 
   public createTable() {
-    this.playerService.login(this.formGroup.controls.username.value);
+    this.playerService.login(this.formGroup.value.username);
+    this.playerService.setAdmin(true);
+    this.deckService.createDeck(1);
     this.router.navigate(['/yusuf']);
   }
 

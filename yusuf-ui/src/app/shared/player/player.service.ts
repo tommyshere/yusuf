@@ -9,41 +9,52 @@ import { Player } from 'app/class';
 })
 export class PlayerService {
   private socket;
+  private _isAdmin = new BehaviorSubject<boolean>(false);
   private _currentPlayer = new BehaviorSubject<Player>(new Player());
+  private _order: number;
 
   constructor() {
     this.socket = io(environment.SOCKET_ENDPOINT);
   }
 
-  login(username: string) {
-    this.socket.emit('login', username);
-    this.setPlayerFromServer();
-  }
-
-  public setPlayerFromServer(): void {
-    this.socket.on('get current player', (data) => {
-      console.log(data);
-      this._currentPlayer.next(data.currentPlayer)
-    });
-  }
-
-  getAllPlayers(): Observable<string[]> {
-    this.socket.emit('get players');
-    return new Observable<string[]>(players => {
-      this.socket.on('get players', (data) => {
-        players.next(data.players);
-      });
-      return () => {
-        this.socket.disconnect();
-      };
-    });
+  public login(name: string): void {
+    const player: Player = {
+      username: name,
+      points: 0,
+    }
+    this._currentPlayer.next(player);
+    this.socket.emit('login', player);
   }
 
   public getCurrentPlayer(): Observable<Player> {
     return this._currentPlayer;
   }
 
-  public setCurrentPlayer(player: Player): void {
-    this._currentPlayer.next(player);
+  public setAdmin(value: boolean): void  {
+    this._isAdmin.next(value);
+  }
+
+  public isAdmin(): Observable<boolean> {
+    return this._isAdmin;
+  }
+
+  public getOrder(): number {
+    return this._order;
+  }
+
+  public setOrder(num: number): void {
+    this._order = num;
+  }
+
+  getAllPlayers(): Observable<string[]> {
+    this.socket.emit('get players');
+    return new Observable<string[]>(players => {
+      this.socket.on('set players', (data) => {
+        players.next(data.players);
+      });
+      return () => {
+        this.socket.disconnect();
+      }
+    });
   }
 }
