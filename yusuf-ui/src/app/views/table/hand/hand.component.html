@@ -1,12 +1,20 @@
-<div *ngFor="let value of hand.spades">
-  Spades {{value}}
-</div>
-<div *ngFor="let value of hand.hearts">
-  Hearts {{value}}
-</div>
-<div *ngFor="let value of hand.clubs">
-  Clubs {{value}}
-</div>
-<div *ngFor="let value of hand.diamonds">
-  Diamonds {{value}}
+<div class="playingCards simpleCards">
+  <ul class="table">
+    <div *ngFor="let value of hand.spades" class="card rank-{{value}} spades">
+      <span class="rank">{{value}}</span>
+      <span class="suit">&spades;</span>
+    </div>
+    <div *ngFor="let value of hand.hearts" class="card rank-{{value}} hearts">
+      <span class="rank">{{value}}</span>
+      <span class="suit">&hearts;</span>
+    </div>
+    <div *ngFor="let value of hand.clubs" class="card rank-{{value}} clubs">
+      <span class="rank">{{value}}</span>
+      <span class="suit">&clubs;</span>
+    </div>
+    <div *ngFor="let value of hand.hearts" class="card rank-{{value}} diamonds">
+      <span class="rank">{{value}}</span>
+      <span class="suit">&diams;</span>
+    </div>
+  </ul>
 </div>
