@@ -36,6 +36,13 @@ io.on('connection', (socket) => {
     emitDeck();
   })
 
+  // make a player hand
+  socket.on('create hand', () => {
+    socket.emit('create hand', {
+      deck: _deck
+    })
+  })
+
   // admin starts game
   socket.on('admin start game', () => {
     io.emit('admin start game');

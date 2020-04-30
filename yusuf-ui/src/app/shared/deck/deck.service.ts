@@ -52,19 +52,17 @@ export class DeckService {
       clubs: []
     };
     // get deck from server
-    this.socket.emit('get deck');
+    this.socket.emit('create hand');
     return new Observable<Deck>(newHand => {
-      this.socket.on('get deck', (data) => {
+      this.socket.on('create hand', (data) => {
         for (let i = 0; i < 5; i++) {
           // get random suit from deck
           const randomSuit = this._randomSuit();
-          console.log(randomSuit);
-          console.log(data.deck[randomSuit]);
           const pulledCard = data.deck[randomSuit].splice(0, 1)[0];
           hand[randomSuit].push(pulledCard);
-          newHand.next(hand);
-          this._emitDeck(data.deck);
         }
+        newHand.next(hand);
+        this._emitDeck(data.deck);
       });
       return () => {
         this.socket.disconnect();
